@@ -1,0 +1,1 @@
+# šis ir piemērs izmaiņām
