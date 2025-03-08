@@ -34,7 +34,7 @@ def game_logic():
     player_turn = 0
     
     while sequence:
-        #first_turn = input("Who starts? Player or AI: ") # Kaut-ko izdomāt ar gājieniem???
+        #first_turn = input("Who starts? Player or AI: ") # Kaut-ko izdomāt ar gājieniem?
         
         print(f"Sequence: {sequence}")
         print(f"Player's {player_turn+1} turn! Score: {scores[player_turn]}")
