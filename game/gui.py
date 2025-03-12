@@ -14,7 +14,7 @@ class CiparuSpele:
     def start_screen(self):
         for widget in self.root.winfo_children():
             widget.destroy()
-        tk.Label(self.root, text="CIPARU SPĒLE", font=("Arial", 24, "bold")).pack(pady=(150, 0))
+        tk.Label(self.root, text="CIPARU SPĒLE", font=("Arial", 24, "bold")).pack(pady=(140, 0))
         
         frame = tk.Frame(self.root)
         frame.pack(pady=(40, 0))
