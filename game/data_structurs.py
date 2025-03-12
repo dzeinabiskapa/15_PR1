@@ -44,10 +44,9 @@ class GameTreeNode:
             child.print_tree(depth + 1)
 
 # Example usage: Generate tree from an initial state
-initial_sequence = [1, 2, 3, 4]
-initial_scores = [0, 0]
-root = GameTreeNode(initial_sequence, initial_scores, 0)
-root.generate_children()
+#initial_scores = [0, 0]
+#root = GameTreeNode(initial_sequence, initial_scores, 0)
+#root.generate_children()
 
 # Print the tree
-root.print_tree()
+#root.print_tree()
