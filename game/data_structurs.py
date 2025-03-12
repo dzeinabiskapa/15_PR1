@@ -11,7 +11,7 @@ class GameTreeNode:
         self.player_turn = player_turn  # 0 for P1, 1 for P2
         self.children = []  # nakamie gajieni
         self.parent = parent  # Backtracking
-
+  
     def generate_children(self):
         """Generates all possible next game states."""
         for i, num in enumerate(self.sequence):
