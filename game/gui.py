@@ -8,9 +8,6 @@ class CiparuSpele:
         self.root = root
         self.root.title("CIPARU SPĒLE")
         self.root.geometry("1000x500")
-        #self.player_turn = True
-        #self.player_score = 0
-        #self.ai_score = 0
         self.game_logic = gameLogic(self.update_ui)
         self.start_screen()
 
@@ -35,7 +32,7 @@ class CiparuSpele:
         
     def start_game(self):
         self.game_logic = gameLogic(self.update_ui)
-        self.game_logic.start_game(int(self.sequence_length_var.get())) # aizsūtam loģikai izvēlēto ciparu virknes garumu
+        self.game_logic.start_game(int(self.sequence_length_var.get()))
         self.game_screen()
 
     def game_screen(self):
@@ -51,14 +48,8 @@ class CiparuSpele:
         self.turn_label.pack(pady=10)
 
         self.selected_number = tk.IntVar(value=-1)
-        #sequence_length = int(self.sequence_length_var.get())
-        #self.sequence = sequence_generation(self.sequence_length_var.get())
         self.sequence_frame = tk.Frame(container)
         self.sequence_frame.pack(pady=10)
-
-        #for index, num in enumerate(self.sequence):
-        #    btn = tk.Radiobutton(sequence_frame, text=str(num), variable=self.selected_number, value=index, indicatoron=0, font=("Arial", 12), padx=5, pady=5)
-        #    btn.pack(side=tk.LEFT, padx=2)
 
         tk.Button(container, text="DALĪT SKAITLI", font=("Arial", 14), command=self.split_number).pack(pady=10)
         tk.Button(container, text="PAŅEMT SKAITLI", font=("Arial", 14), command=self.take_number).pack(pady=5)
@@ -74,9 +65,8 @@ class CiparuSpele:
 
         self.update_ui(self.game_logic.sequence, self.game_logic.scores, self.game_logic.player_turn)
 
-
     def update_ui(self, sequence, scores, player_turn):
-        if not hasattr(self, 'sequence_frame') or not self.sequence_frame.winfo_exists(): #pārbaude vai eksistē kadrs
+        if not hasattr(self, 'sequence_frame') or not self.sequence_frame.winfo_exists():
             return
 
         for widget in self.sequence_frame.winfo_children():
@@ -112,6 +102,28 @@ class CiparuSpele:
         return "Spēlētāja gājiens" if self.game_logic.player_turn == 1 else "AI gājiens"
 
     def end_game(self):
-        winner = "Spēlētājs" if self.game_logic.scores[0] > self.game_logic.scores[1] else "AI" if self.game_logic.scores[1] > self.game_logic.scores[0] else "Neizšķirts"
-        messagebox.showinfo("Spēles beigas.", f"Uzvarētājs: {winner}")
-        self.start_screen()
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+        container = tk.Frame(self.root)
+        container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
+        tk.Label(container, text="CIPARU SPĒLE", font=("Arial", 20, "bold"), justify="center").pack(pady=10)
+        tk.Label(container, text="SPĒLE BEIGUSIES", font=("Arial", 18, "bold"), justify="center").pack()
+
+        if self.game_logic.scores[0] > self.game_logic.scores[1]:
+            winner_text = "Uzvar: Spēlētājs"
+        elif self.game_logic.scores[1] > self.game_logic.scores[0]:
+            winner_text = "Uzvar: AI"
+        else:
+            winner_text = "Neizšķirts"
+
+        tk.Label(container, text=winner_text, font=("Arial", 14), justify="center").pack(pady=5)
+
+        tk.Button(container, text="SPĒLĒT VĒLREIZ", font=("Arial", 14, "bold"), command=self.start_screen).pack(pady=20)
+        
+        score_frame = tk.Frame(container)
+        score_frame.pack(pady=10)
+
+        tk.Label(score_frame, text=f"Spēlētāja punktu skaits: {self.game_logic.scores[0]}", font=("Arial", 12)).pack(side=tk.LEFT, padx=20)
+        tk.Label(score_frame, text=f"AI punktu skaits: {self.game_logic.scores[1]}", font=("Arial", 12)).pack(side=tk.LEFT)
