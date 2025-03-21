@@ -87,6 +87,8 @@ class CiparuSpele:
         for widget in self.sequence_frame.winfo_children():
             widget.destroy()
 
+        self.selected_number.set(-1)  # Reset selection after each move
+
         for index, num in enumerate(sequence):
             btn = tk.Radiobutton(self.sequence_frame, text=str(num), variable=self.selected_number, value=index, indicatoron=0, font=("Arial", 12), padx=5, pady=5)
             btn.pack(side=tk.LEFT, padx=2)
