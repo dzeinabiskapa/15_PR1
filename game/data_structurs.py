@@ -47,6 +47,8 @@ class GameTreeNode:
 
 def generate_full_game_tree(initial_sequence, max_depth=3):
     """Creates the full game tree up to a limited depth and prints it."""
+    print(f"Initial Sequence: {initial_sequence}")  # Print the starting sequence
     root = GameTreeNode(initial_sequence, [0, 0], 0, depth=0)  # Start with Player 1
     root.generate_children(max_depth=max_depth)  # Generate full tree up to max_depth
     root.print_tree()  # Print the tree
+    

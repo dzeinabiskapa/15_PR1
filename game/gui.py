@@ -10,9 +10,6 @@ class CiparuSpele:
         self.root.title("CIPARU SPĒLE")
         self.root.geometry("1000x500")
         self.game_logic = gameLogic(self.update_ui)
-        self.game_logic = None #datu strukturam
-        self.game_tree_root = None  # saglaba sakni
-        self.current_node = None  # tagadejais nodes kurš radas
         self.start_screen()
 
     def start_screen(self):
@@ -37,18 +34,13 @@ class CiparuSpele:
     def start_game(self):
         self.game_logic = gameLogic(self.update_ui)
         self.game_logic.start_game(int(self.sequence_length_var.get()))
+        
+
+        print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n") # printešana
+        generate_full_game_tree(self.game_logic.sequence, max_depth=3) # izprinte koku diemžel dators nevareja izprintet visu tāpec lidz 3 izprintejas
+        
         self.game_screen()
-
-        """Start the game and generate the limited game tree."""
-        sequence_length = int(self.sequence_length_var.get())
-        self.game_logic.start_game(sequence_length)
-
-        initial_sequence = self.game_logic.sequence  # Get sequence from game logic
-
-        print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n")
-        generate_full_game_tree(self.game_logic.sequence, max_depth=3)
-
-        self.game_screen()
+        
         
     def game_screen(self):
         for widget in self.root.winfo_children():
