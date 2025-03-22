@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from game_logic import gameLogic
+from data_structurs import generate_full_game_tree  # Import tree function
 
 class CiparuSpele:
     def __init__(self, root):
@@ -33,8 +34,14 @@ class CiparuSpele:
     def start_game(self):
         self.game_logic = gameLogic(self.update_ui)
         self.game_logic.start_game(int(self.sequence_length_var.get()))
-        self.game_screen()
+        
 
+        print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n") # printešana
+        generate_full_game_tree(self.game_logic.sequence, max_depth=3) # izprinte koku diemžel dators nevareja izprintet visu tāpec lidz 3 izprintejas
+        
+        self.game_screen()
+        
+        
     def game_screen(self):
         for widget in self.root.winfo_children():
             widget.destroy()
