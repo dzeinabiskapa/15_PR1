@@ -35,12 +35,10 @@ class CiparuSpele:
         self.game_logic = gameLogic(self.update_ui)
         self.game_logic.start_game(int(self.sequence_length_var.get()))
         
-
-        print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n") # printešana
-        generate_full_game_tree(self.game_logic.sequence, max_depth=3) # izprinte koku diemžel dators nevareja izprintet visu tāpec lidz 3 izprintejas
+        #print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n") # printešana
+        #generate_full_game_tree(self.game_logic.sequence, max_depth=3) # izprinte koku diemžel dators nevareja izprintet visu tāpec lidz 3 izprintejas
         
         self.game_screen()
-        
         
     def game_screen(self):
         for widget in self.root.winfo_children():
