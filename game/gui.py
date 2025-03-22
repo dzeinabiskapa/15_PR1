@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from game_logic import gameLogic
-from data_structurs import generate_full_game_tree  # Import tree function
+# from data_structurs import generate_full_game_tree  # Import tree function
 
 class CiparuSpele:
     def __init__(self, root):
@@ -89,6 +89,9 @@ class CiparuSpele:
 
         if not sequence:
             self.end_game()
+            
+        if player_turn == 1:
+            self.root.after(1000, self.game_logic.ai_move)
 
     def take_number(self):
         index = self.selected_number.get()
