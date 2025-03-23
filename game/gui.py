@@ -92,7 +92,7 @@ class CiparuSpele:
             btn = tk.Radiobutton(self.sequence_frame, text=str(num), variable=self.selected_number, value=index, indicatoron=0, font=("Arial", 12), padx=5, pady=5)
             btn.pack(side=tk.LEFT, padx=2)
 
-        self.turn_label.config(text="Spēlētāja gājiens" if player_turn == 1 else "AI gājiens")
+        self.turn_label.config(text="Spēlētāja gājiens" if player_turn == 0 else "AI gājiens")
         self.player_score_label.config(text=f"Spēlētāja punktu skaits: {scores[0]}")
         self.ai_score_label.config(text=f"AI punktu skaits: {scores[1]}")
 
