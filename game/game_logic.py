@@ -1,4 +1,6 @@
 import random
+
+from alpha_beta_algo import AlphaBetaAI
 from minimax_algo import MinimaxAI
 class gameLogic:
     
@@ -6,6 +8,7 @@ class gameLogic:
         self.sequence = []
         self.scores = [0,0]
         self.player_turn = 0
+        self.minimax = True
         self.update_ui = update_ui
 
     def start_game(self, sequence_length):
@@ -41,8 +44,12 @@ class gameLogic:
         
     def ai_move(self):
         if self.player_turn == 1:
-            minimax_ai = MinimaxAI(self, max_depth = 3)
-            bestMove = minimax_ai.getBestMove()
+            if self.minimax:
+                minimax_ai = MinimaxAI(self, max_depth = 3)
+                bestMove = minimax_ai.getBestMove()
+            else:
+                alphabeta_ai = AlphaBetaAI(self, max_depth = 3)
+                bestMove = alphabeta_ai.getBestMove()
             
             if bestMove:
                 move_type, index = bestMove
