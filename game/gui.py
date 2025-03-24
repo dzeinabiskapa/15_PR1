@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from game_logic import gameLogic
-from data_structurs import generate_full_game_tree  # Import tree function
+# from data_structurs import generate_full_game_tree  # Import tree function
 
 class CiparuSpele:
     def __init__(self, root):
@@ -10,9 +10,6 @@ class CiparuSpele:
         self.root.title("CIPARU SPĒLE")
         self.root.geometry("1000x500")
         self.game_logic = gameLogic(self.update_ui)
-        self.game_logic = None #datu strukturam
-        self.game_tree_root = None  # saglaba sakni
-        self.current_node = None  # tagadejais nodes kurš radas
         self.start_screen()
 
     def start_screen(self):
@@ -26,30 +23,32 @@ class CiparuSpele:
 
         frame = tk.Frame(container)
         frame.pack(pady=20)
-        tk.Label(frame, text="Ievadiet ciparu skaitu:", font=("Arial", 14)).pack(side=tk.LEFT, padx=5)
 
+        tk.Label(frame, text="Ievadiet ciparu skaitu:", font=("Arial", 14)).pack(side=tk.LEFT, padx=5)
         self.sequence_length_var = tk.StringVar(value="15")
         self.sequence_dropdown = ttk.Combobox(frame, textvariable=self.sequence_length_var, values=[str(i) for i in range(15, 21)], state='readonly')
         self.sequence_dropdown.pack(side=tk.LEFT)
 
+        turn_frame = tk.Frame(container)
+        turn_frame.pack(pady=10)
+        tk.Label(turn_frame, text="Izvēlieties gājienu secību:", font=("Arial", 14)).pack(side=tk.LEFT, padx=5)
+        self.player_first_var = tk.StringVar(value="Spēlētājs pirmais")
+        ttk.Combobox(turn_frame, textvariable=self.player_first_var, values=["Spēlētājs pirmais", "AI pirmais"], state='readonly').pack(side=tk.LEFT)
+
         tk.Button(container, text="SĀKT SPĒLI", font=("Arial", 14, "bold"), command=self.start_game).pack(pady=20)
-        
+
     def start_game(self):
         self.game_logic = gameLogic(self.update_ui)
         self.game_logic.start_game(int(self.sequence_length_var.get()))
-        self.game_screen()
 
-        """Start the game and generate the limited game tree."""
-        sequence_length = int(self.sequence_length_var.get())
-        self.game_logic.start_game(sequence_length)
+        # Set who goes first
+        self.game_logic.player_turn = 0 if self.player_first_var.get() == "Spēlētājs pirmais" else 1
 
-        initial_sequence = self.game_logic.sequence  # Get sequence from game logic
-
-        print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n")
-        generate_full_game_tree(self.game_logic.sequence, max_depth=3)
+        # print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n") # printešana
+        # generate_full_game_tree(self.game_logic.sequence, max_depth=3) # izprinte koku diemžel dators nevareja izprintet visu tāpec lidz 3 izprintejas
 
         self.game_screen()
-        
+
     def game_screen(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -100,6 +99,9 @@ class CiparuSpele:
         if not sequence:
             self.end_game()
 
+        if player_turn == 1:
+            self.root.after(1000, self.game_logic.ai_move)
+
     def take_number(self):
         index = self.selected_number.get()
         if index == -1:
@@ -114,7 +116,7 @@ class CiparuSpele:
             return
         if not self.game_logic.split_number(index):
             messagebox.showerror("Kļūda", "Šo ciparu nevar dalīt.")
-        
+
     def get_turn_text(self):
         return "Spēlētāja gājiens" if self.game_logic.player_turn == 1 else "AI gājiens"
 
@@ -138,7 +140,7 @@ class CiparuSpele:
         tk.Label(container, text=winner_text, font=("Arial", 14), justify="center").pack(pady=5)
 
         tk.Button(container, text="SPĒLĒT VĒLREIZ", font=("Arial", 14, "bold"), command=self.start_screen).pack(pady=20)
-        
+
         score_frame = tk.Frame(container)
         score_frame.pack(pady=10)
 
