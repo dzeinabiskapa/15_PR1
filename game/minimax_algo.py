@@ -20,12 +20,13 @@ class MinimaxAI(AiFunc):
         )
 
         root.generate_children(max_depth = self.max_depth)
+        print(f"Generated {len(root.children)} possible moves")
 
         bestValue = -float('inf')
         bestMove = None
 
         for child in root.children:
-            value = self._minimax(child, depth = 1, isMaximizing = False)
+            value = self._minimax(child, depth = 1, isMaximizing = True)
             if value > bestValue:
                 bestValue = value
                 bestMove = self._getMoveFromChild(root, child)
@@ -35,21 +36,19 @@ class MinimaxAI(AiFunc):
 
     def _minimax(self, node, depth, isMaximizing):
         if depth == self.max_depth or not node.sequence:
-            return self._evaluate(node)
+            return self._evaluate(node, isMaximizing)
 
         if isMaximizing:
             value = -float('inf')
-            
+
             for child in node.children:
                 value = max(value, self._minimax(child, depth + 1, False))
-                
+
             return value
         else:
             value = float('inf')
-            
+
             for child in node.children:
                 value = min(value, self._minimax(child, depth + 1, True))
-                
-            return value  
 
-    
+            return value

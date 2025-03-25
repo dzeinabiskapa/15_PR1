@@ -1,8 +1,10 @@
 from collections import Counter
-
 class AiFunc:
-    def _evaluate(self, node):
+    def _evaluate(self, node, isMaximizing):
         delta = node.scores[1] - node.scores[0]
+
+        if not isMaximizing:
+            delta = -delta
     
         fourExists = 4 in node.sequence
         aN4 = 1 if fourExists else 0
@@ -16,7 +18,7 @@ class AiFunc:
         twoExists = 2 in node.sequence and not (threeExists or fourExists)
         aN2 = 1 if twoExists else 0
     
-        fN = delta + 0.5 * aN4 + 0.4 * aN3 + 0.3 * aHighest + 0.15 * aN2
+        fN = delta + 0.7 * aN4 + 0.4 * aN3 + 0.3 * aHighest + 0.2 * aN2
         return fN
 
     def _getMoveFromChild(self, parent, child):
