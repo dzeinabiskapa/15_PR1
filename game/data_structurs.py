@@ -11,7 +11,6 @@ class GameTreeNode:
     def generate_children(self, max_depth=3):
         """Generates possible moves for both players up to max_depth."""
         if self.depth >= max_depth:
-            print(f"Reached max depth {self.depth}, stopping generation")
             return
 
         for i, num in enumerate(self.sequence):
