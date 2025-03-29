@@ -27,7 +27,7 @@ class AlphaBetaAI(AiFunc):
         beta = float('inf')
 
         for child in root.children:
-            value = self._alphabeta(child, depth = 1, alpha=alpha, beta=beta, isMaximizing = False)
+            value = self._alphabeta(child, depth = 1, alpha=alpha, beta=beta, isMaximizing = True)
             if value > bestValue:
                 bestValue = value
                 bestMove = self._getMoveFromChild(root, child)
@@ -38,7 +38,7 @@ class AlphaBetaAI(AiFunc):
 
     def _alphabeta(self, node, depth, alpha, beta, isMaximizing):
         if depth == self.max_depth or not node.sequence:
-            return self._evaluate(node)
+            return self._evaluate(node, isMaximizing)
 
         if isMaximizing:
             value = -float('inf')
