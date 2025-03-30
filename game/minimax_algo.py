@@ -1,97 +1,66 @@
-from collections import Counter
 from data_structurs import GameTreeNode
+from ai_func import AiFunc
 
-class MinimaxAI:
+class MinimaxAI(AiFunc):
     def __init__(self, game_logic, max_depth=3):
         self.game_logic = game_logic
         self.max_depth = max_depth
 
     def getBestMove(self):
-        print(f"Current Sequence: {self.game_logic.sequence}")  # for debug
-        print(f"Current Scores: {self.game_logic.scores}")  # for debug
-        print(f"Player Turn: {self.game_logic.player_turn}")  # for debug
+        # izveidojam spēles koka saknes mezglu ar pašreizējo spēles stāvokli
         root = GameTreeNode(
-            sequence = self.game_logic.sequence,
-            scores = self.game_logic.scores,
-            player_turn = self.game_logic.player_turn,
-            depth = 0
+            sequence = self.game_logic.sequence, # spēles ciparu virkne
+            scores = self.game_logic.scores, # abu spēlētāju punkti
+            player_turn = self.game_logic.player_turn, # kura spēlētāja kārta
+            depth = 0 # saknes dziļums ir 0 (sākuma stāvoklis)
         )
 
-        root.generate_children(max_depth = self.max_depth)
+        # ģenerē visus iespējamos turpmākos gājienus (bērnus) līdz maksimālajam dziļumam (3)
+        root.generate_children(max_depth = self.max_depth) 
+        
+        bestValue = -float('inf') # sākotnējā labākā vērtība (mazākā iespējamā, lai atrastu maksimālo, jo jebkura vērtība būs par to lielāka)
+        bestMove = None # labākais gājiens, pašlaik nav atrasts
 
-        bestValue = -float('inf')
-        bestMove = None
-
+        # ejam cauri katram iespējamam gājienam (bērnu mezglam)
         for child in root.children:
-            value = self._minimax(child, depth = 1, isMaximizing = False)
-            if value > bestValue:
-                bestValue = value
-                bestMove = self._getMoveFromChild(root, child)
+            # rekursīvi izsaucam minimax, nākamais līmenis pēc saknes būs 1 (dziļums 1) 
+            # isMaximising nosaka, ka pirmais līmenis vienmēr ir MAX, t.i., AI ir maksimizētājs,
+            # kas būs patiesi, jo minimax tiek palaistss uz katru AI gājienu
+            value = self._minimax(child, depth = 1, isMaximizing = True)
 
-        print(f"Best Move: {bestMove}")
+            # gājiena vērtējuma salīdzināšana
+            if value > bestValue: # ja pašreizējais gājiens ir labāks par iepriekšējo labāko, tad
+                bestValue = value # tas kļūst par labāko gājienu (pārrakstīšana)
+                bestMove = self._getMoveFromChild(root, child) # atrodam atbilstošo gājienu (mezgls pārtop par gājienu spēlē)
+
         return bestMove
 
     def _minimax(self, node, depth, isMaximizing):
+        # algoritma beigu nosacījum, t.i., beigt, ja sasniegts maksimālais dziļums vai beidzas spēles stāvoklis
         if depth == self.max_depth or not node.sequence:
-            return self._evaluate(node)
+            return self._evaluate(node, isMaximizing) # heiristiskā vērtība attiecīgajam mezglam
 
-        if isMaximizing:
-            value = -float('inf')
-            
+        if isMaximizing: # maksimizētāja (AI) kārta
+            value = -float('inf') # sākotnējā vērtība
+
+            # visu iespējamo gājienu (bērnu) analīze:
             for child in node.children:
+                # rekursīvi iegūst bērna vērtību 
+                # katrs rekursīvais izsaukums pārvietojas vienu līmeni dziļāk spēles kokā (depth +1)
+                # nākamais spēlētājs būs minimizētājs - False
+                # izvēlamies labāko (maksimālo) vērtību no visiem iespējamiem bērniem
                 value = max(value, self._minimax(child, depth + 1, False))
-                
+
             return value
-        else:
-            value = float('inf')
-            
+        else: # minimizētāja (cilvēka) kārta
+            value = float('inf') # sākotnējā vērtība ir +bezgalība, t.i., meklējot mazāko vērtību, jebkas būs mazāks par to
+
+            # pretinieka gājienu analīze
             for child in node.children:
+                # rekursīvi iegūst bērna vērtību 
+                # katrs rekursīvais izsaukums pārvietojas vienu līmeni dziļāk spēles kokā (depth +1)
+                # nākamais spēlētājs būs maksimizētājs - True
+                # pieņemam, ka pretinieks izvēlēsies priekš AI nelabvēlīgāko (minimālo) gājienu
                 value = min(value, self._minimax(child, depth + 1, True))
-                
+
             return value
-
-    def _evaluate(self, node):
-        delta = node.scores[1] - node.scores[0]
-
-        fourExists = 4 in node.sequence
-        aN4 = 1 if fourExists else 0
-
-        threeExists = 3 in node.sequence and not fourExists
-        aN3 = 1 if threeExists else 0
-
-        highestFigure = max(node.sequence) if node.sequence else 0
-        aHighest = highestFigure
-
-        twoExists = 2 in node.sequence and not (threeExists or fourExists)
-        aN2 = 1 if twoExists else 0
-
-        fN = delta + 0.5 * aN4 + 0.4 * aN3 + 0.3 * aHighest + 0.15 * aN2
-        return fN
-
-    def _getMoveFromChild(self, parent, child):
-        parentCounts = Counter(parent.sequence)
-        childCounts = Counter(child.sequence)
-        
-        for num in parentCounts:
-            if parentCounts[num] == childCounts[num] + 1:
-                for i in range(len(parent.sequence)):
-                    if i >= len(child.sequence) or parent.sequence[i] != child.sequence[i]:
-                        if parent.sequence[i] == num:
-                            print(f"Move: Take number {num} at index {i}")  # for debug
-                            return ("take", i)
-        
-        if childCounts[1] == parentCounts[1] + 2 and childCounts[2] == parentCounts[2] - 1:
-            for i, num in enumerate(parent.sequence):
-                if num == 2:
-                    print(f"Move: Split number {num} at index {i}")  # for debug
-                    return ("split", i)
-        elif childCounts[2] == parentCounts[2] + 2 and childCounts[4] == parentCounts[4] - 1:
-            for i, num in enumerate(parent.sequence):
-                if num == 4:
-                    print(f"Move: Split number {num} at index {i}")  # for debug
-                    return ("split", i)
-        
-        print("No valid move found!")  # for debug
-        return None  # Return None if no move is found         
-
-    

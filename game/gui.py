@@ -2,14 +2,13 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from game_logic import gameLogic
-# from data_structurs import generate_full_game_tree  # Import tree function
 
 class CiparuSpele:
     def __init__(self, root):
         self.root = root
         self.root.title("CIPARU SPĒLE")
         self.root.geometry("1000x500")
-        self.game_logic = gameLogic(self.update_ui)
+        self.selected_ai_algorithm = tk.StringVar(value="Minimax")
         self.start_screen()
 
     def start_screen(self):
@@ -35,17 +34,19 @@ class CiparuSpele:
         self.player_first_var = tk.StringVar(value="Spēlētājs pirmais")
         ttk.Combobox(turn_frame, textvariable=self.player_first_var, values=["Spēlētājs pirmais", "AI pirmais"], state='readonly').pack(side=tk.LEFT)
 
+        algo_frame = tk.Frame(container)
+        algo_frame.pack(pady=10)
+        tk.Label(algo_frame, text="Izvēlieties algoritmu:", font=("Arial", 14)).pack(side=tk.LEFT, padx=5)
+        ttk.Combobox(algo_frame, textvariable=self.selected_ai_algorithm, values=["Minimax", "Alpha-Beta"], state='readonly').pack(side=tk.LEFT)
+
         tk.Button(container, text="SĀKT SPĒLI", font=("Arial", 14, "bold"), command=self.start_game).pack(pady=20)
 
     def start_game(self):
-        self.game_logic = gameLogic(self.update_ui)
+        selected_algo = self.selected_ai_algorithm.get()
+        self.game_logic = gameLogic(self.update_ui, selected_algo)
         self.game_logic.start_game(int(self.sequence_length_var.get()))
 
-        # Set who goes first
         self.game_logic.player_turn = 0 if self.player_first_var.get() == "Spēlētājs pirmais" else 1
-
-        # print("\n=== FULL GAME TREE (LIMITED TO 3 MOVES) ===\n") # printešana
-        # generate_full_game_tree(self.game_logic.sequence, max_depth=3) # izprinte koku diemžel dators nevareja izprintet visu tāpec lidz 3 izprintejas
 
         self.game_screen()
 
@@ -86,7 +87,7 @@ class CiparuSpele:
         for widget in self.sequence_frame.winfo_children():
             widget.destroy()
 
-        self.selected_number.set(-1)  # Reset selection after each move
+        self.selected_number.set(-1)
 
         for index, num in enumerate(sequence):
             btn = tk.Radiobutton(self.sequence_frame, text=str(num), variable=self.selected_number, value=index, indicatoron=0, font=("Arial", 12), padx=5, pady=5)
