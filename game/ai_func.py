@@ -17,13 +17,17 @@ class AiFunc:
         threeExists = 3 in node.sequence and not fourExists
         aN3 = 1 if threeExists else 0
 
+        # lielākais skaitlis virknē
+        highestFigure = max(node.sequence) if node.sequence else 0
+        aHighest = highestFigure # paņem paša skaitļa vērtību
+
         # skaitļa 2 esamība (zemāka prioritāte)
         # ņem vērā tikai ja nav augstāku skaitļu
         twoExists = 2 in node.sequence and not (threeExists or fourExists)
         aN2 = 1 if twoExists else 0
     
         # pievienojam svarus klāt heiristiskiem faktoriem un iegūstam heiristiskās funkcijas rezultāt vērtību
-        fN = delta + 0.5 * aN4 + 0.4 * aN3 + 0.2 * aN2
+        fN = delta + 0.7 * aN4 + 0.4 * aN3 + 0.3 * aHighest + 0.2 * aN2
         return fN
 
     def _getMoveFromChild(self, parent, child): # gājiena noteikšana salīdzinot vecāku un bērnu
