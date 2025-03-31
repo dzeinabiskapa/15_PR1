@@ -39,4 +39,3 @@ class GameTreeNode:
                 split_node = GameTreeNode(split_sequence, split_scores, 1 - self.player_turn, self, self.depth + 1)
                 self.children.append(split_node)
                 split_node.generate_children(max_depth)
-    
