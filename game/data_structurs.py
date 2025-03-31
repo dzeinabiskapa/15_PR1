@@ -1,29 +1,29 @@
 class GameTreeNode:
     """Represents a node in the game tree."""
     def __init__(self, sequence, scores, player_turn, parent=None, depth=0):
-        self.sequence = sequence  # Current number sequence
-        self.scores = scores  # [Player 1 score, Player 2 score]
-        self.player_turn = player_turn  # 0 for P1, 1 for P2
-        self.children = []
-        self.parent = parent
-        self.depth = depth  # Track depth level
+        self.sequence = sequence  # Saraksts ar atlikušajiem skaitļiem spēlē
+        self.scores = scores   # Saraksts ar spēlētāju punktiem [P1 punkti, P2 punkti]
+        self.player_turn = player_turn  # Kurš spēlētājs ir pie gājiena (0 - P1, 1 - P2)
+        self.children = [] # Saraksts ar bērnu mezgliem (iespējamiem nākamajiem gājieniem)
+        self.parent = parent  # Atsauce uz vecāku mezglu (iepriekšējo stāvokli)
+        self.depth = depth  # Mezglu dziļums kokā (palīdz ierobežot rekursiju)
 
     def generate_children(self, max_depth=3):
-        """Generates possible moves for both players up to max_depth."""
+        """Uztaisa visus iespejamos gajienus ko abi spēletaji var izdarit lidz max_depth"""
         if self.depth >= max_depth:
             return
 
         for i, num in enumerate(self.sequence):
-            # Take move
-            new_sequence = self.sequence[:i] + self.sequence[i+1:]
-            new_scores = self.scores[:]
+            # paņemšans gajienu
+            new_sequence = self.sequence[:i] + self.sequence[i+1:] # noņema skaitli no no secības
+            new_scores = self.scores[:] # atjaunina punktu sakitu
             new_scores[self.player_turn] += num
     
-            child_node = GameTreeNode(new_sequence, new_scores, 1 - self.player_turn, self, self.depth + 1)
-            self.children.append(child_node)
+            child_node = GameTreeNode(new_sequence, new_scores, 1 - self.player_turn, self, self.depth + 1) # izveido jaunus bernu mezglus
+            self.children.append(child_node) # pievieno mezglu 
             child_node.generate_children(max_depth)
     
-            # Split moves
+            # dališanas gajiens
             if num == 2:
                 split_sequence = self.sequence[:i] + [1, 1] + self.sequence[i+1:]
     
@@ -39,11 +39,4 @@ class GameTreeNode:
                 split_node = GameTreeNode(split_sequence, split_scores, 1 - self.player_turn, self, self.depth + 1)
                 self.children.append(split_node)
                 split_node.generate_children(max_depth)
-
-def generate_full_game_tree(initial_sequence, max_depth=3):
-    """Creates the full game tree up to a limited depth and prints it."""
-    print(f"Initial Sequence: {initial_sequence}")  # Print the starting sequence
-    root = GameTreeNode(initial_sequence, [0, 0], 0, depth=0)  # Start with Player 1
-    root.generate_children(max_depth=max_depth)  # Generate full tree up to max_depth
-    #root.print_tree()  # Print the tree
     
